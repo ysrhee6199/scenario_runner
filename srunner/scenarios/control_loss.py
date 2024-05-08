@@ -25,8 +25,12 @@ from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import Dr
 from srunner.scenarios.basic_scenario import BasicScenario
 from srunner.tools.scenario_helper import get_waypoint_in_distance
 
+import rclpy
+from rclpy.node import Node
 
-class ControlLoss(BasicScenario):
+from std_msgs.msg import String
+
+class ControlLoss(BasicScenario,Node):
 
     """
     Implementation of "Control Loss Vehicle" (Traffic Scenario 01)

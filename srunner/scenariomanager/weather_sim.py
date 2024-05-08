@@ -165,7 +165,82 @@ class OSCWeatherBehavior(py_trees.behaviour.Behaviour):
 
         return py_trees.common.Status.RUNNING
 
+class MOSCWeatherBehavior(py_trees.behaviour.Behaviour):
 
+    """
+    Atomic to read weather settings from the blackboard and apply these in CARLA.
+    Used in combination with UpdateWeather() to have a continuous weather simulation.
+
+    This behavior is always in a running state and must never terminate.
+    The user must not add this behavior. It is automatically added by the ScenarioManager.
+
+    This atomic also sets the datetime to blackboard variable, used by TimeOfDayComparison atomic
+
+    Args:
+        name (string): Name of the behavior.
+            Defaults to 'WeatherBehavior'.
+
+    Attributes:
+        _weather (srunner.scenariomanager.weather_sim.Weather): Weather settings.
+        _current_time (float): Current CARLA time [seconds].
+    """
+
+    def __init__(self, name="WeatherBehavior"):
+        """
+        Setup parameters
+        """
+        super(MOSCWeatherBehavior, self).__init__(name)
+        self._weather = None
+        self._current_time = None
+
+    def initialise(self):
+        """
+        Set current time to current CARLA time
+        """
+        self._current_time = GameTime.get_time()
+
+    def update(self):
+        """
+        Check if new weather settings are available on the blackboard, and if yes fetch these
+        into the _weather attribute.
+
+        Apply the weather settings from _weather to CARLA.
+
+        Note:
+            To minimize CARLA server interactions, the weather is only updated, when the blackboard
+            is updated, or if the weather animation flag is true. In the latter case, the update
+            frequency is 1 Hz.
+
+        returns:
+            py_trees.common.Status.RUNNING
+        """
+
+        weather = None
+
+        try:
+            check_weather = operator.attrgetter("CarlaWeather")
+            weather = check_weather(py_trees.blackboard.Blackboard())
+        except AttributeError:
+            pass
+
+        if weather:
+            self._weather = weather
+            delattr(py_trees.blackboard.Blackboard(), "CarlaWeather")
+            CarlaDataProvider.get_world().set_weather(self._weather.carla_weather)
+            py_trees.blackboard.Blackboard().set("Datetime", self._weather.datetime, overwrite=True)
+
+        if self._weather and self._weather.animation:
+            new_time = GameTime.get_time()
+            delta_time = new_time - self._current_time
+
+            if delta_time > 1:
+                self._weather.update(delta_time)
+                self._current_time = new_time
+                CarlaDataProvider.get_world().set_weather(self._weather.carla_weather)
+
+                py_trees.blackboard.Blackboard().set("Datetime", self._weather.datetime, overwrite=True)
+
+        return py_trees.common.Status.SUCCESS
 class RouteWeatherBehavior(py_trees.behaviour.Behaviour):
 
     """

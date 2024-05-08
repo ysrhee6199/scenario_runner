@@ -100,6 +100,7 @@ class IfTriggerer(AtomicCondition):
         return new_status
 
 
+
 class TimeOfWaitComparison(AtomicCondition):
     def __init__(self, duration_time, name="TimeOfWaitComparison"):
         super(TimeOfWaitComparison, self).__init__(name)

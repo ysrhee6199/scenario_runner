@@ -21,13 +21,14 @@ import random
 import py_trees
 
 import carla
-
+from srunner.scenariomanager.weather_sim import (Weather, OSCWeatherBehavior,MOSCWeatherBehavior)
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.scenarioatomics.atomic_behaviors import (ActorTransformSetter,
                                                                       ActorDestroy,
                                                                       KeepVelocity,
                                                                       StopVehicle,
-                                                                      WaypointFollower)
+                                                                      WaypointFollower,
+                                                                      ChangeWeather)
 from srunner.scenariomanager.scenarioatomics.atomic_criteria import CollisionTest
 from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import (InTriggerDistanceToVehicle,
                                                                                InTriggerDistanceToNextIntersection,
@@ -36,6 +37,7 @@ from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import (I
 from srunner.scenariomanager.timer import TimeOut
 from srunner.scenarios.basic_scenario import BasicScenario
 from srunner.tools.scenario_helper import get_waypoint_in_distance
+
 
 
 class FollowLeadingVehicle(BasicScenario):
@@ -56,7 +58,7 @@ class FollowLeadingVehicle(BasicScenario):
 
         If randomize is True, the scenario parameters are randomized
         """
-
+        self.world = world
         self._map = CarlaDataProvider.get_map()
         self._first_vehicle_location = 25
         self._first_vehicle_speed = 10
@@ -66,7 +68,7 @@ class FollowLeadingVehicle(BasicScenario):
         self._other_actor_transform = None
         # Timeout of scenario in seconds
         self.timeout = timeout
-
+        self.new_weather =  Weather(carla.WeatherParameters.HardRainNoon)
         super(FollowLeadingVehicle, self).__init__("FollowVehicle",
                                                    ego_vehicles,
                                                    config,
@@ -114,8 +116,8 @@ class FollowLeadingVehicle(BasicScenario):
             self.other_actors[0], self._other_actor_stop_in_front_intersection))
 
         # stop vehicle
-        stop = StopVehicle(self.other_actors[0], self._other_actor_max_brake)
-
+        stop = StopVehicle(self.other_actors[0], self._other_actor_max_brake)   
+        change_weather_behavior = ChangeWeather(weather=self.new_weather)
         # end condition
         endcondition = py_trees.composites.Parallel("Waiting for end position",
                                                     policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL)
@@ -124,11 +126,14 @@ class FollowLeadingVehicle(BasicScenario):
                                                         distance=20,
                                                         name="FinalDistance")
         endcondition_part2 = StandStill(self.ego_vehicles[0], name="StandStill", duration=1)
+        osc_weather_behavior = MOSCWeatherBehavior()
         endcondition.add_child(endcondition_part1)
         endcondition.add_child(endcondition_part2)
-
+        endcondition.add_child(osc_weather_behavior)
+        print("Build behavior tree")
         # Build behavior tree
         sequence = py_trees.composites.Sequence("Sequence Behavior")
+        sequence.add_child(change_weather_behavior)
         sequence.add_child(driving_to_next_intersection)
         sequence.add_child(stop)
         sequence.add_child(endcondition)

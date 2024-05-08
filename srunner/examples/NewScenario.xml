@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<scenarios>
+    <!-- scenario name MUST contain 'left' or 'right', defines whether car comes from left or right lane-->
+    <scenario name="NewScenario_1" type="NewScenario" town="IHP_map">
+        <ego_vehicle x="-1139.0" y="4.5" z="2.0" yaw="0" model="vehicle.trailer.trailer" rolename="hero2"/>
+        <ego_vehicle x="-1133.8" y="4.5" z="2.0" yaw="0" model="vehicle.daf.dafxf" rolename="hero"/>
+    </scenario>
+</scenarios>

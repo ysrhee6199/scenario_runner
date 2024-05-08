@@ -100,7 +100,7 @@ class CutIn(BasicScenario):
 
         # car_visible
         behaviour = py_trees.composites.Sequence("CarOn_{}_Lane" .format(self._direction))
-        car_visible = ActorTransformSetter(self.other_actors[0], self._transform_visible)
+        car_visible =  (self.other_actors[0], self._transform_visible)
         behaviour.add_child(car_visible)
 
         # just_drive
