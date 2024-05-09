@@ -71,8 +71,8 @@ class NewScenario(BasicScenario):
         """
         root = py_trees.composites.Parallel("Newscenario", py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
         change_weather_behavior = ChangeWeather(weather=self.new_weather)
-        osc_weather_behavior = OSCWeatherBehavior()
-        change_road_friction = ChangeRoadFriction(friction = 0.0)
+        osc_weather_behavior = MOSCWeatherBehavior()
+        change_road_friction = ChangeRoadFriction(0.6)
 
         sequence = py_trees.composites.Sequence()
         sequence.add_child(change_weather_behavior)
