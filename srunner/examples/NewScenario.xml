@@ -2,7 +2,11 @@
 <scenarios>
     <!-- scenario name MUST contain 'left' or 'right', defines whether car comes from left or right lane-->
     <scenario name="NewScenario_1" type="NewScenario" town="IHP_map">
-        <ego_vehicle x="-1139.0" y="4.5" z="2.0" yaw="0" model="vehicle.trailer.trailer" rolename="hero2"/>
+        <ego_vehicle x="-1139.0" y="4.5" z="2.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer0"/>
         <ego_vehicle x="-1133.8" y="4.5" z="2.0" yaw="0" model="vehicle.daf.dafxf" rolename="hero"/>
+        <ego_vehicle x="-1169.0" y="4.5" z="2.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer1"/>
+        <ego_vehicle x="-1163.8" y="4.5" z="2.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck1"/>
+        <ego_vehicle x="-1199.0" y="4.5" z="2.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer2"/>
+        <ego_vehicle x="-1193.8" y="4.5" z="2.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck2"/>
     </scenario>
 </scenarios>

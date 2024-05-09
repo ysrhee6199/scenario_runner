@@ -296,7 +296,7 @@ class ChangeRoadFriction(AtomicBehavior):
             actor.destroy()
 
         friction_bp = CarlaDataProvider.get_world().get_blueprint_library().find('static.trigger.friction')
-        extent = carla.Location(1000000.0, 1000000.0, 1000000.0)
+        extent = carla.Location(1000000.0, 100000.0, 4000.0)
         friction_bp.set_attribute('friction', str(self._friction))
         friction_bp.set_attribute('extent_x', str(extent.x))
         friction_bp.set_attribute('extent_y', str(extent.y))
@@ -304,7 +304,7 @@ class ChangeRoadFriction(AtomicBehavior):
 
         # Spawn Trigger Friction
         transform = carla.Transform()
-        transform.location = carla.Location(-10000.0, -10000.0, 0.0)
+        transform.location = carla.Location(100.0, 0.0, 0.0)
         CarlaDataProvider.get_world().spawn_actor(friction_bp, transform)
 
         return py_trees.common.Status.SUCCESS

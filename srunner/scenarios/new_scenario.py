@@ -10,7 +10,8 @@ from srunner.scenariomanager.scenarioatomics.atomic_behaviors import (ActorTrans
                                                                       KeepVelocity,
                                                                       StopVehicle,
                                                                       WaypointFollower,
-                                                                      ChangeWeather)
+                                                                      ChangeWeather,
+                                                                      ChangeRoadFriction)
 from srunner.scenariomanager.scenarioatomics.atomic_criteria import CollisionTest
 from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import (InTriggerDistanceToVehicle,
                                                                                InTriggerDistanceToNextIntersection,
@@ -52,6 +53,7 @@ class NewScenario(BasicScenario):
         self.criteria_enable = False
         self._trigger_dist = 2
         self.trigger_location, _ = get_location_in_distance(self.ego_vehicles[1], self.distance)
+        self.trigger_end_location, _ = get_location_in_distance(self.ego_vehicles[1], 1500)
         self.new_weather =  Weather(carla.WeatherParameters.HardRainNoon)
         # Call constructor of BasicScenario
         super(NewScenario, self).__init__(
@@ -70,14 +72,17 @@ class NewScenario(BasicScenario):
         root = py_trees.composites.Parallel("Newscenario", py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
         change_weather_behavior = ChangeWeather(weather=self.new_weather)
         osc_weather_behavior = OSCWeatherBehavior()
-
+        change_road_friction = ChangeRoadFriction(friction = 0.0)
 
         sequence = py_trees.composites.Sequence()
         sequence.add_child(change_weather_behavior)
         sequence.add_child(InTriggerDistanceToLocation(
             self.ego_vehicles[1], self.trigger_location, self._trigger_dist))
 
-        sequence.add_child(osc_weather_behavior)   
+        sequence.add_child(osc_weather_behavior) 
+        sequence.add_child(change_road_friction)
+        sequence.add_child(InTriggerDistanceToLocation(
+            self.ego_vehicles[1], self.trigger_end_location, 0))
         root.add_child(sequence)
         return root
 
