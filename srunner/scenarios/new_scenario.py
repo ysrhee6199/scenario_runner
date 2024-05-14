@@ -17,13 +17,16 @@ from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import (I
                                                                                InTriggerDistanceToNextIntersection,
                                                                                DriveDistance,
                                                                                StandStill,
-                                                                               InTriggerDistanceToLocation)
+                                                                               InTriggerDistanceToLocation,
+                                                                               VelocityPublisher,
+                                                                               BrakePublisher,
+                                                                               TimeGapPublisher)
 from srunner.scenariomanager.timer import TimeOut
-from srunner.scenarios.basic_scenario import BasicScenario
+from srunner.scenarios.basic_scenario import (BasicScenario,ROSBasicScenario)
 from srunner.tools.scenario_helper import (get_waypoint_in_distance,get_location_in_distance)
 
 
-class NewScenario(BasicScenario):
+class NewScenario(ROSBasicScenario):
     """
     Some documentation on NewScenario
     :param world is the CARLA world
@@ -46,6 +49,7 @@ class NewScenario(BasicScenario):
         """
         Setup all relevant parameters and create scenario
         """
+        print("Heelo")
         self.timeout = timeout
         self.ego_vehicles = ego_vehicles
         self._map = CarlaDataProvider.get_map()
@@ -53,7 +57,7 @@ class NewScenario(BasicScenario):
         self.criteria_enable = False
         self._trigger_dist = 2
         self.trigger_location, _ = get_location_in_distance(self.ego_vehicles[1], self.distance)
-        self.trigger_end_location, _ = get_location_in_distance(self.ego_vehicles[1], 1500)
+        self.trigger_end_location, _ = get_location_in_distance(self.ego_vehicles[1], 300)
         self.new_weather =  Weather(carla.WeatherParameters.HardRainNoon)
         # Call constructor of BasicScenario
         super(NewScenario, self).__init__(
@@ -76,13 +80,18 @@ class NewScenario(BasicScenario):
 
         sequence = py_trees.composites.Sequence()
         sequence.add_child(change_weather_behavior)
+
+        sequence.add_child(TimeGapPublisher(name="Publish Timegap", timegap = 0.5))
+        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 14.0))
+        sequence.add_child(BrakePublisher(name="Publish Brake",brake=False))
         sequence.add_child(InTriggerDistanceToLocation(
             self.ego_vehicles[1], self.trigger_location, self._trigger_dist))
-
+        
         sequence.add_child(osc_weather_behavior) 
         sequence.add_child(change_road_friction)
         sequence.add_child(InTriggerDistanceToLocation(
-            self.ego_vehicles[1], self.trigger_end_location, 0))
+            self.ego_vehicles[1], self.trigger_end_location,self._trigger_dist))
+        sequence.add_child(BrakePublisher(name="Publish Brake3",brake=True))
         root.add_child(sequence)
         return root
 

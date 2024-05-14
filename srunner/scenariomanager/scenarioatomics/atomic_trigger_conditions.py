@@ -34,7 +34,10 @@ from srunner.scenariomanager.timer import GameTime
 from srunner.tools.scenario_helper import get_distance_along_route, get_distance_between_actors
 
 import srunner.tools as sr_tools
-
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float32,Bool 
+from rclpy.qos import QoSProfile, DurabilityPolicy
 EPSILON = 0.001
 
 
@@ -76,6 +79,128 @@ class AtomicCondition(py_trees.behaviour.Behaviour):
         """
         self.logger.debug("%s.terminate()[%s->%s]" % (self.__class__.__name__, self.status, new_status))
 
+class VelocityPublisher(py_trees.behaviour.Behaviour):
+    """
+    Publish a velocity command when ticked.
+    """
+    def __init__(self, name, target_speed = 14.0):
+        super(VelocityPublisher, self).__init__(name)
+        self.blackboard = py_trees.blackboard.Blackboard()
+        self.publisher = None
+        self.target_speed = target_speed
+
+    def setup(self,unused_timeout=15):
+        """
+        Setup ROS 2 communication.
+        """
+        if not rclpy.ok():
+            rclpy.init()
+        self.node = rclpy.create_node(self.name.lower().replace(' ', '_'))
+        qos_profile = QoSProfile(
+            depth=10,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL
+        )
+        self.publisher = self.node.create_publisher(Float32, '/cmd2xav_target_vel', qos_profile)
+        return True
+
+    def initialise(self):
+        self.logger.debug("%s.initialise()" % self.__class__.__name__)
+
+    def update(self):
+        """
+        Publish the velocity command.
+        """
+        msg = Float32()
+        msg.data = self.target_speed  # Set your velocity here
+        self.publisher.publish(msg)
+        print("%s.publish_velocity()" % self.__class__.__name__)
+        return py_trees.common.Status.SUCCESS
+
+    def terminate(self, new_status):
+        self.node.destroy_node()
+        self.logger.debug("%s.terminate()" % self.__class__.__name__)
+
+class BrakePublisher(py_trees.behaviour.Behaviour):
+    """
+    Publish a velocity command when ticked.
+    """
+    def __init__(self, name,brake=False):
+        super(BrakePublisher, self).__init__(name)
+        self.blackboard = py_trees.blackboard.Blackboard()
+        self.publisher = None
+        self.brake = brake
+
+    def setup(self,unused_timeout=15):
+        """
+        Setup ROS 2 communication.
+        """
+        if not rclpy.ok():
+            rclpy.init()
+        self.node = rclpy.create_node(self.name.lower().replace(' ', '_'))
+        qos_profile = QoSProfile(
+            depth=10,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL
+        )
+        self.publisher = self.node.create_publisher(Bool, '/cmd2xav_brake', qos_profile)
+        return True
+
+    def initialise(self):
+        self.logger.debug("%s.initialise()" % self.__class__.__name__)
+
+    def update(self):
+        """
+        Publish the velocity command.
+        """
+        msg = Bool()
+        msg.data = self.brake  
+        self.publisher.publish(msg)
+        print("%s.publish_Brake()" % self.__class__.__name__)
+        return py_trees.common.Status.SUCCESS
+
+    def terminate(self, new_status):
+        self.node.destroy_node()
+        self.logger.debug("%s.terminate()" % self.__class__.__name__)
+
+class TimeGapPublisher(py_trees.behaviour.Behaviour):
+    """
+    Publish a velocity command when ticked.
+    """
+    def __init__(self, name,timegap=0.5):
+        super(TimeGapPublisher, self).__init__(name)
+        self.blackboard = py_trees.blackboard.Blackboard()
+        self.publisher = None
+        self.timegap = timegap
+
+    def setup(self,unused_timeout=15):
+        """
+        Setup ROS 2 communication.
+        """
+        if not rclpy.ok():
+            rclpy.init()
+        self.node = rclpy.create_node(self.name.lower().replace(' ', '_'))
+        qos_profile = QoSProfile(
+            depth=10,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL
+        )
+        self.publisher = self.node.create_publisher(Float32, '/cmd2xav_timegap', qos_profile)
+        return True
+
+    def initialise(self):
+        self.logger.debug("%s.initialise()" % self.__class__.__name__)
+
+    def update(self):
+        """
+        Publish the velocity command.
+        """
+        msg = Float32()
+        msg.data = self.timegap  
+        self.publisher.publish(msg)
+        print("%s.publish_TimeGap()" % self.__class__.__name__)
+        return py_trees.common.Status.SUCCESS
+
+    def terminate(self, new_status):
+        self.node.destroy_node()
+        self.logger.debug("%s.terminate()" % self.__class__.__name__)
 
 class IfTriggerer(AtomicCondition):
 
@@ -730,7 +855,6 @@ class InTriggerDistanceToLocation(AtomicCondition):
         """
 
         new_status = py_trees.common.Status.RUNNING
-
         location = CarlaDataProvider.get_location(self._actor)
 
         if location is None:
