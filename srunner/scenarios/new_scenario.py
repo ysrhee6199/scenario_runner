@@ -76,23 +76,23 @@ class NewScenario(ROSBasicScenario):
         Setup the behavior for NewScenario
         """
         root = py_trees.composites.Parallel("Newscenario", py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
-        change_weather_behavior = ChangeWeather(weather=self.new_weather)
-        osc_weather_behavior = MOSCWeatherBehavior()
-        change_road_friction = ChangeRoadFriction(0.6)
+        #change_weather_behavior = ChangeWeather(weather=self.new_weather)
+        #osc_weather_behavior = MOSCWeatherBehavior()
+        #change_road_friction = ChangeRoadFriction(0.6)
 
         sequence = py_trees.composites.Sequence()
-        sequence.add_child(change_weather_behavior)
+        #sequence.add_child(change_weather_behavior)
 
         sequence.add_child(TimeGapPublisher(name="Publish Timegap", timegap = 0.5))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 14.0))
+        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 16.67))
         sequence.add_child(BrakePublisher(name="Publish Brake",brake=False))
 
 
-        sequence.add_child(TimeOfWaitComparison(duration_time = 5))
+        sequence.add_child(TimeOfWaitComparison(duration_time = 17))
         
 
-        sequence.add_child(osc_weather_behavior) 
-        sequence.add_child(change_road_friction)
+        #sequence.add_child(osc_weather_behavior) 
+        #sequence.add_child(change_road_friction)
         sequence.add_child(SpawnAndDriveVehicle(scenario=self, ego_vehicle=self.ego_vehicles[1], distance_ahead=40))
         sequence.add_child(TimeOfWaitComparison(duration_time = 20))
         
@@ -125,7 +125,7 @@ class NewScenario(ROSBasicScenario):
         # Ensure there is no collision at the spawn location
 
         blueprint = self.world.get_blueprint_library().filter('vehicle.*')[0]
-        first_vehicle = CarlaDataProvider.request_new_actor('vehicle.nissan.patrol', spawn_transform)
+        first_vehicle = CarlaDataProvider.request_new_actor('vehicle.carlamotors.firetruck', spawn_transform)
         if first_vehicle:
             self.other_actors.append(first_vehicle)
             return first_vehicle
@@ -150,7 +150,7 @@ class SpawnAndDriveVehicle(py_trees.composites.Sequence):
         self.vehicle = self.scenario.spawn_vehicle_ahead(self.ego_vehicle, self.distance_ahead)
         # Add behaviors to control the vehicle's speed after it has been spawned
         self.add_child(ChangeVehicleSpeed(self.vehicle, 60 / 3.6, duration=5))  # 60 km/h for 5 seconds
-        self.add_child(ChangeVehicleSpeed(self.vehicle, 30 / 3.6, duration=5))  # 30 km/h for 5 seconds
+        self.add_child(ChangeVehicleSpeed(self.vehicle, 30 / 3.6, duration=8))  # 30 km/h for 5 seconds
         self.add_child(ChangeVehicleSpeed(self.vehicle, 80 / 3.6, duration=5))  # 80 km/h for 5 seconds
         self.add_child(StopVehicle(self.vehicle, brake_value=1.0))  # Stop the vehicle
 
