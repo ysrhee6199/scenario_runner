@@ -33,7 +33,7 @@
     <scenario name="ControlLoss_11" type="ControlLoss" town="Town04">
         <ego_vehicle x="-40.4" y="-229.5" z="0" yaw="131" model="vehicle.lincoln.mkz_2017" />
     </scenario>
-    <scenario name="ControlLoss_12" type="ControlLoss" town="Town04">
+    <scenario name="ControlLoss_12" type="ControlLoss" town="Town04_Opt">
         <ego_vehicle x="-45" y="37.2" z="11" yaw="0" model="vehicle.lincoln.mkz_2017" />
     </scenario>
     <scenario name="ControlLoss_13" type="ControlLoss" town="Town05">

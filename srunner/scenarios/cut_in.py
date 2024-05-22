@@ -29,18 +29,18 @@ from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import In
 from srunner.scenarios.basic_scenario import BasicScenario
 
 
-class CutIn(BasicScenario):
+class CutIns(BasicScenario):
 
     """
     The ego vehicle is driving on a highway and another car is cutting in just in front.
     This is a single ego vehicle scenario
     """
-
+    print("Hell22ow")
     timeout = 1200
 
     def __init__(self, world, ego_vehicles, config, randomize=False, debug_mode=False, criteria_enable=True,
                  timeout=600):
-
+        print("Hellow")
         self.timeout = timeout
         self._map = CarlaDataProvider.get_map()
         self._reference_waypoint = self._map.get_waypoint(config.trigger_points[0].location)
@@ -54,7 +54,7 @@ class CutIn(BasicScenario):
         self._direction = None
         self._transform_visible = None
 
-        super(CutIn, self).__init__("CutIn",
+        super(CutIns, self).__init__("CutIns",
                                     ego_vehicles,
                                     config,
                                     world,
@@ -100,7 +100,7 @@ class CutIn(BasicScenario):
 
         # car_visible
         behaviour = py_trees.composites.Sequence("CarOn_{}_Lane" .format(self._direction))
-        car_visible =  (self.other_actors[0], self._transform_visible)
+        car_visible = ActorTransformSetter(self.other_actors[0], self._transform_visible)
         behaviour.add_child(car_visible)
 
         # just_drive

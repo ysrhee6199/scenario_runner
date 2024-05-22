@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<scenarios>
+    <!-- scenario name MUST contain 'left' or 'right', defines whether car comes from left or right lane-->
+    <scenario name="NewScenario_CutIn_1" type="NewScenarioCutIn" town="IHP_map">
+        <ego_vehicle x="-1139.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer0"/>
+        <ego_vehicle x="-1133.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck0"/>
+        <ego_vehicle x="-1162.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer1"/>
+        <ego_vehicle x="-1156.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck1"/>
+        <ego_vehicle x="-1185.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer2"/>
+        <ego_vehicle x="-1179.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck2"/>
+    </scenario>
+
+    <scenario name="NewScenario_CutIn_2" type="NewScenarioCutIn" town="IHP_map">
+        <ego_vehicle x="-1139.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer0"/>
+        <ego_vehicle x="-1133.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck0"/>
+        <ego_vehicle x="-1162.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer1"/>
+        <ego_vehicle x="-1156.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck1"/>
+    </scenario>
+</scenarios>

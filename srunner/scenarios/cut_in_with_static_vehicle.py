@@ -44,6 +44,7 @@ class StaticCutIn(BasicScenario):
         """
         Setup all relevant parameters and create scenario
         """
+        self.world= world
         self._wmap = CarlaDataProvider.get_map()
         self.timeout = timeout
 
