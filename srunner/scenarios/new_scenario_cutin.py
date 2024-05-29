@@ -45,7 +45,7 @@ class NewScenarioCutIn(ROSBasicScenario):
     # some parameters for the other vehicles
 
     def __init__(self, world, ego_vehicles, config, randomize=False, debug_mode=False, criteria_enable=True,
-                 timeout=300):
+                 timeout=600):
         """
         Initialize all parameters required for NewScenario
         """
@@ -60,8 +60,8 @@ class NewScenarioCutIn(ROSBasicScenario):
         self.distance = 100
         self.criteria_enable = False
         self._trigger_dist = 2
-        self.trigger_location, _ = get_location_in_distance(self.ego_vehicles[1], self.distance)
-        self.trigger_end_location, _ = get_location_in_distance(self.ego_vehicles[1], 300)
+        self.trigger_location, _ = get_location_in_distance(self.ego_vehicles[0], self.distance)
+        self.trigger_end_location, _ = get_location_in_distance(self.ego_vehicles[0], 300)
         self.new_weather =  Weather(carla.WeatherParameters.HardRainNoon)
         # Call constructor of BasicScenario
         super(NewScenarioCutIn, self).__init__(
@@ -86,26 +86,23 @@ class NewScenarioCutIn(ROSBasicScenario):
         #sequence.add_child(change_weather_behavior)
 
         sequence.add_child(TimeGapPublisher(name="Publish Timegap", timegap = 0.5))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
+        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 80/3.6))
         sequence.add_child(BrakePublisher(name="Publish Brake",brake=False))
 
 
-        sequence.add_child(TimeOfWaitComparison(duration_time = 60))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 60/3.6))
-        sequence.add_child(TimeOfWaitComparison(duration_time = 20))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
-        sequence.add_child(TimeOfWaitComparison(duration_time = 20))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 60/3.6))
-        sequence.add_child(TimeOfWaitComparison(duration_time = 20))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
-        sequence.add_child(TimeOfWaitComparison(duration_time = 20))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 60/3.6))
-        sequence.add_child(TimeOfWaitComparison(duration_time = 20))
-        sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
+        sequence.add_child(TimeOfWaitComparison(duration_time = 70))
+        #sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 60/3.6))
+        #sequence.add_child(TimeGapPublisher(name="Publish Timegap", timegap = 1.0))
+        #sequence.add_child(TimeOfWaitComparison(duration_time = 70))
+        #sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
+        #sequence.add_child(TimeGapPublisher(name="Publish Timegap", timegap = 0.5))
+        #sequence.add_child(TimeOfWaitComparison(duration_time = 60))
+        #sequence.add_child(TimeOfWaitComparison(duration_time = 30))
+        #sequence.add_child(VelocityPublisher(name="Publish Velocity",target_speed = 90/3.6))
         #sequence.add_child(osc_weather_behavior) 
         #sequence.add_child(change_road_friction)
         #sequence.add_child(SpawnAndDriveVehicle(scenario=self, ego_vehicle=self.ego_vehicles[3], distance_ahead=4))
-        #sequence.add_child(TimeOfWaitComparison(duration_time = 3))
+        #sequence.add_child(TimeOfWaitComparison(duration_time = 70))
         
         sequence.add_child(BrakePublisher(name="Publish Brake3",brake=True))
         root.add_child(sequence)

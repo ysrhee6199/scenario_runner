@@ -809,7 +809,7 @@ class InTriggerDistanceToVehicle(AtomicCondition):
 
         distance = get_distance_between_actors(
             self._actor, self._reference_actor, self._distance_type, self._freespace, self._global_rp)
-
+        print(distance)
         if self._comparison_operator(distance, self._distance):
             new_status = py_trees.common.Status.SUCCESS
 

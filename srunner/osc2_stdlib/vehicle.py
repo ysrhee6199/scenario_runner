@@ -39,6 +39,7 @@ class Vehicle:
 
     def set_position(self, pos: misc.Position) -> None:
         self.position = pos
+        print("Hello")
         # convert position to transform，reference convert_position_to_transform function
         if type(pos) is misc.WorldPosition:
             x = float(pos.x)

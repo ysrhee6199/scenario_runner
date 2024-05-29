@@ -1,0 +1,26 @@
+import basic.osc
+
+# tag::library-physical-angle[]
+type angle is SI(rad: 1)
+unit degree of angle is SI(rad: 1, factor: 57.295779513)
+unit deg    of angle is SI(rad: 1, factor: 57.295779513)
+unit radian of angle is SI(rad: 1, factor: 1)
+unit rad    of angle is SI(rad: 1, factor: 1)
+# end::library-physical-angle[]
+
+scenario top:
+    path: Path
+    path.set_map("IHP_map")    # specify map to use in this test
+
+
+    ego_vehicle: Model3        # ego car
+    ego_vehicle: Rubicon                # ego car2
+    ego_vehicle.set_position(x:-1139.0m, y:4.5m, z:1.0m, pitch:0.0rad, yaw:0.0rad, roll:0.0rad)
+    ego_vehicle.set_position(x:-1169.0m, y:4.5m, z:2.0m, pitch:0.0rad, yaw:0.0rad, roll:0.0rad)
+
+    
+    do serial:
+        get_ahead: parallel(duration: 10s):
+            ego_vehicle.drive() with:
+                speed(120kph)
+
