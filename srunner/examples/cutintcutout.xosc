@@ -136,7 +136,7 @@
                         <Environment name="Environment1">
                             <TimeOfDay animation="false" dateTime="2020-10-22T21:00:00"/>
                             <Weather cloudState="free">
-                                <Sun intensity="0.95" azimuth="0.0" elevation="1.31"/>
+                                <Sun intensity="0.85" azimuth="0.0" elevation="65.31"/>
                                 <Fog visualRange="100000.0"/>
                                 <Precipitation precipitationType="dry" intensity="0.0"/>
                             </Weather>
@@ -185,7 +185,7 @@
                             <AssignControllerAction>
                                 <Controller name="truck0">
                                     <Properties>
-                                        <Property name="module" value=""/>
+                                        <Property name="module" value="external_control"/>
                                     </Properties>
                                 </Controller>
                             </AssignControllerAction>
@@ -297,7 +297,7 @@
                     <PrivateAction>
                         <TeleportAction>
                             <Position>
-                                <WorldPosition x="300.3101944745183" y="-4.5" z="0.17773218783872174" h="-9.613484155526346e-05"/>
+                                <WorldPosition x="-1199.0" y="-8.5" z="0.17773218783872174" h="-9.613484155526346e-05"/>
                             </Position>
                         </TeleportAction>
                     </PrivateAction>
@@ -333,21 +333,21 @@
                 </Private>
             </Actions>
         </Init>
-        <Story name="uninteded lane change of LV">
-            <Act name="uninteded stop of Vehicle_1">
+        <Story name="Cut in and Cut out">
+            <Act name="speed up">
             <ManeuverGroup maximumExecutionCount="1" name="Maneuver group for lv speed up">
                 <Actors selectTriggeringEntities="false">
-                    <EntityRef entityRef="truck0"/>
+                    <EntityRef entityRef="Vehicle_1"/>
                 </Actors>
-                <Maneuver name="lv speed up">
-                    <Event name="lv speed up" priority="overwrite">
-                        <Action name="lv speed up">
+                <Maneuver name="Vehicle_1 speed up">
+                    <Event name="Vehicle_1 speed up" priority="overwrite">
+                        <Action name="Vehicle_1 speed up">
                             <PrivateAction>
                                 <LongitudinalAction>
                                     <SpeedAction>
-                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="180"/>
+                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="40"/>
                                         <SpeedActionTarget>
-                                            <AbsoluteTargetSpeed value="16.67"/>
+                                            <RelativeTargetSpeed value="0" speedTargetValueType="delta" continuous="true" entityRef="truck0"/>
                                         </SpeedActionTarget>
                                     </SpeedAction>
                                 </LongitudinalAction>
@@ -357,25 +357,50 @@
                             <ConditionGroup>
                                     <Condition name="StartTime" delay="0" conditionEdge="rising">
                                         <ByValueCondition>
-                                            <SimulationTimeCondition value="3" rule="greaterThan"/>
+                                            <SimulationTimeCondition value="1" rule="greaterThan"/>
                                         </ByValueCondition>
                                     </Condition>
                             </ConditionGroup>
                         </StartTrigger>
                     </Event>
                 </Maneuver>
-                <Maneuver name="Maneuver lv 1">
-                    <Event name="lane change Event" priority="overwrite">
-                        <Action name="lanchege for lv">
+                <Maneuver name=" Vehicle_1 accel catch up  tailoer 0 ">
+                    <Event name="accek" priority="overwrite">
+                        <Action name="accel to catch upfor v1">
                             <PrivateAction>
-                                <LateralAction>
-                                    <LaneChangeAction>
-                                    <LaneChangeActionDynamics dynamicsShape="cubic" value="10" dynamicsDimension="distance"/>
-                                    <LaneChangeTarget>
-                                        <RelativeTargetLane entityRef="truck0" value="-1"/>
-                                    </LaneChangeTarget> 
-                                    </LaneChangeAction>
-                                </LateralAction>
+                                <LongitudinalAction>
+                                    <SpeedAction>
+                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="15"/>
+                                        <SpeedActionTarget>
+                                            <AbsoluteTargetSpeed value="22" />
+                                        </SpeedActionTarget>
+                                    </SpeedAction>
+                                </LongitudinalAction>
+                            </PrivateAction>
+                        </Action>
+                        <StartTrigger>
+                            <ConditionGroup>
+                                    <Condition name="StartTime" delay="0" conditionEdge="rising">
+                                        <ByValueCondition>
+                                            <SimulationTimeCondition value="20" rule="greaterThan"/>
+                                        </ByValueCondition>
+                                    </Condition>
+                            </ConditionGroup>
+                        </StartTrigger>
+                    </Event>
+                </Maneuver>
+                <Maneuver name=" Vehicle_1 accel catch up  tailoer 0 3">
+                    <Event name="accek3" priority="overwrite">
+                        <Action name="accel to catch upfor v13">
+                            <PrivateAction>
+                                <LongitudinalAction>
+                                    <SpeedAction>
+                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="1"/>
+                                        <SpeedActionTarget>
+                                            <AbsoluteTargetSpeed value="19" />
+                                        </SpeedActionTarget>
+                                    </SpeedAction>
+                                </LongitudinalAction>
                             </PrivateAction>
                         </Action>
                         <StartTrigger>
@@ -383,10 +408,10 @@
                                 <Condition name="DistaneCondition" delay="0" conditionEdge="rising">
                                     <ByEntityCondition>
                                         <TriggeringEntities triggeringEntitiesRule="any">
-                                            <EntityRef entityRef="truck0"/>
+                                            <EntityRef entityRef="Vehicle_1"/>
                                         </TriggeringEntities>
                                         <EntityCondition>
-                                            <RelativeDistanceCondition entityRef="Vehicle_1" relativeDistanceType="longitudinal" value="25" freespace="true" rule="lessThan"/>
+                                            <RelativeDistanceCondition entityRef="trailer0" relativeDistanceType="longitudinal" value="6" freespace="true" rule="lessThan"/>
                                         </EntityCondition>
                                     </ByEntityCondition>
                                 </Condition>
@@ -394,15 +419,40 @@
                         </StartTrigger>
                     </Event>
                 </Maneuver>
-                <Maneuver name="Maneuver lv 313">
-                    <Event name="speed up Event3" priority="overwrite">
-                        <Action name="speed123 up for3 lv">
+                <Maneuver name="Maneuver 4">
+                    <Event name=" cut in Event" priority="overwrite">
+                        <Action name="cut in for lv">
+                            <PrivateAction>
+                                <LateralAction>
+                                    <LaneChangeAction>
+                                    <LaneChangeActionDynamics dynamicsShape="cubic" value="20" dynamicsDimension="distance"/>
+                                    <LaneChangeTarget>
+                                        <RelativeTargetLane entityRef="Vehicle_1" value="1"/>
+                                    </LaneChangeTarget> 
+                                    </LaneChangeAction>
+                                </LateralAction>
+                            </PrivateAction>
+                        </Action>
+                        <StartTrigger>
+                            <ConditionGroup>
+                                <Condition name=" after" delay="0" conditionEdge="rising">
+                                    <ByValueCondition>
+                                        <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="accel to catch upfor v13"  state="completeState"/>
+                                    </ByValueCondition>
+                                </Condition>
+                            </ConditionGroup>
+                        </StartTrigger>
+                    </Event>
+                </Maneuver>
+                <Maneuver name="Maneuver 5">
+                    <Event name="maintain speed" priority="overwrite">
+                        <Action name="maintain speed up for v1">
                             <PrivateAction>
                                 <LongitudinalAction>
                                     <SpeedAction>
-                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="30"/>
+                                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="7"/>
                                         <SpeedActionTarget>
-                                            <AbsoluteTargetSpeed value="16.67"/>
+                                            <AbsoluteTargetSpeed value="20.0"/>
                                         </SpeedActionTarget>
                                     </SpeedAction>
                                 </LongitudinalAction>
@@ -412,7 +462,57 @@
                             <ConditionGroup>
                                 <Condition name=" after" delay="0" conditionEdge="rising">
                                     <ByValueCondition>
-                                        <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="lanchege for lv"  state="completeState"/>
+                                        <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="cut in for lv"  state="completeState"/>
+                                    </ByValueCondition>
+                                </Condition>
+                            </ConditionGroup>
+                        </StartTrigger>
+                    </Event>
+                </Maneuver>
+                <Maneuver name="Maneuver 6">
+                    <Event name=" cut out Event" priority="overwrite">
+                        <Action name="cut out for lv">
+                            <PrivateAction>
+                                <LateralAction>
+                                    <LaneChangeAction>
+                                    <LaneChangeActionDynamics dynamicsShape="cubic" value="20" dynamicsDimension="distance"/>
+                                    <LaneChangeTarget>
+                                        <RelativeTargetLane entityRef="Vehicle_1" value="-1"/>
+                                    </LaneChangeTarget> 
+                                    </LaneChangeAction>
+                                </LateralAction>
+                            </PrivateAction>
+                        </Action>
+                        <StartTrigger>
+                            <ConditionGroup>
+                                <Condition name=" after" delay="0" conditionEdge="rising">
+                                    <ByValueCondition>
+                                        <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="maintain speed up for v1"  state="completeState"/>
+                                    </ByValueCondition>
+                                </Condition>
+                            </ConditionGroup>
+                        </StartTrigger>
+                    </Event>
+                </Maneuver>
+                <Maneuver name="Maneuver 7">
+                    <Event name="maintain speed2" priority="overwrite">
+                        <Action name="maintain speed up for v12">
+                            <PrivateAction>
+                                <LongitudinalAction>
+                                    <SpeedAction>
+                                        <SpeedActionDynamics dynamicsShape="linear" dynamicsDimension="time" value="8"/>
+                                        <SpeedActionTarget>
+                                            <AbsoluteTargetSpeed value="18.0"/>
+                                        </SpeedActionTarget>
+                                    </SpeedAction>
+                                </LongitudinalAction>
+                            </PrivateAction>
+                        </Action>
+                        <StartTrigger>
+                            <ConditionGroup>
+                                <Condition name=" after" delay="0" conditionEdge="rising">
+                                    <ByValueCondition>
+                                        <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="cut out for lv"  state="completeState"/>
                                     </ByValueCondition>
                                 </Condition>
                             </ConditionGroup>

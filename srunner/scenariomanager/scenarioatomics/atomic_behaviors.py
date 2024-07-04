@@ -555,10 +555,11 @@ class ChangeActorTargetSpeed(AtomicBehavior):
                 actor_dict[self._actor.id].update_target_speed(relative_velocity * self._value)
             else:
                 print('self._value_type must be delta or factor')
-
+        print("sucssssces")
         # check duration and driven_distance
         if not self._continuous:
             if (self._duration is not None) and (GameTime.get_time() - self._start_time > self._duration):
+                print("succes")
                 new_status = py_trees.common.Status.SUCCESS
 
             driven_distance = CarlaDataProvider.get_location(self._actor).distance(self._start_location)

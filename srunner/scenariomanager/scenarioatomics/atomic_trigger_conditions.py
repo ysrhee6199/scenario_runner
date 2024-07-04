@@ -120,6 +120,46 @@ class VelocityPublisher(py_trees.behaviour.Behaviour):
         self.node.destroy_node()
         self.logger.debug("%s.terminate()" % self.__class__.__name__)
 
+class SensorPublisher(py_trees.behaviour.Behaviour):
+    """
+    Publish a velocity command when ticked.
+    """
+    def __init__(self, name="t"):
+        super(SensorPublisher, self).__init__(name)
+        self.blackboard = py_trees.blackboard.Blackboard()
+        self.publisher = None
+
+    def setup(self,unused_timeout=15):
+        """
+        Setup ROS 2 communication.
+        """
+        if not rclpy.ok():
+            rclpy.init()
+        self.node = rclpy.create_node(self.name.lower().replace(' ', '_'))
+        qos_profile = QoSProfile(
+            depth=10,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL
+        )
+        self.publisher = self.node.create_publisher(Bool, '/truck1/front_camera/attribute', qos_profile)
+        return True
+
+    def initialise(self):
+        self.logger.debug("%s.initialise()" % self.__class__.__name__)
+
+    def update(self):
+        """
+        Publish the velocity command.
+        """
+        msg = Bool()
+        msg.data = True  # Set your velocity here
+        self.publisher.publish(msg)
+        print(" publish limitation" )
+        return py_trees.common.Status.SUCCESS
+
+    def terminate(self, new_status):
+        self.node.destroy_node()
+        self.logger.debug("%s.terminate()" % self.__class__.__name__)
+
 class BrakePublisher(py_trees.behaviour.Behaviour):
     """
     Publish a velocity command when ticked.
@@ -809,7 +849,7 @@ class InTriggerDistanceToVehicle(AtomicCondition):
 
         distance = get_distance_between_actors(
             self._actor, self._reference_actor, self._distance_type, self._freespace, self._global_rp)
-        print(distance)
+        #print(distance)
         if self._comparison_operator(distance, self._distance):
             new_status = py_trees.common.Status.SUCCESS
 

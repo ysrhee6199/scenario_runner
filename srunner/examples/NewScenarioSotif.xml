@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<scenarios>
+    <!-- scenario name MUST contain 'left' or 'right', defines whether car comes from left or right lane-->
+    <scenario name="NewScenarioSotif_1" type="NewScenarioSotif" town="IHP_map">
+        <ego_vehicle x="-1139.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer0"/>
+        <ego_vehicle x="-1134.0" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck0"/>
+        <ego_vehicle x="-1169.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer1"/>
+        <ego_vehicle x="-1164.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck1"/>
+        <ego_vehicle x="-1199.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer2"/>
+        <ego_vehicle x="-1194.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck2"/>
+        <weather cloudiness="0" precipitation="0" precipitation_deposits="0" wind_intensity="0" sun_azimuth_angle="1.0" sun_altitude_angle="177.5" />
+    </scenario>
+
+    <scenario name="NewScenarioSotif_2" type="NewScenarioSotif" town="IHP_map">
+        <ego_vehicle x="-1139.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer0"/>
+        <ego_vehicle x="-1133.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck0"/>
+        <ego_vehicle x="-1162.0" y="4.5" z="0.0" yaw="0" model="vehicle.trailer.trailer" rolename="trailer1"/>
+        <ego_vehicle x="-1156.8" y="4.5" z="0.0" yaw="0" model="vehicle.daf.dafxf" rolename="truck1"/>
+    </scenario>
+</scenarios>
